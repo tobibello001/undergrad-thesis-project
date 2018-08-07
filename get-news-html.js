@@ -37,7 +37,7 @@ const getHTMLData = url => {
     });
 }
 
-getHTMLData('https://unilag.edu.ng/news').then((htmlData) => {
+getHTMLData('https://unilag.edu.ng/news/').then((htmlData) => {
     htmlData = sanitizeHtml(htmlData, { allowedAttributes: false, allowedTags: false });
     fs.writeFile("news.html", htmlData, (err) => {
         if (err) {
