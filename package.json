@@ -11,6 +11,7 @@
   "license": "ISC",
   "dependencies": {
     "cheerio": "^1.0.0-rc.2",
-    "html-validator": "^3.0.5"
+    "html-validator": "^3.0.5",
+    "sanitize-html": "^1.18.4"
   }
 }
