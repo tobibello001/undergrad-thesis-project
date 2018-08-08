@@ -3,6 +3,17 @@ const fs = require("fs");
 
 const cheerio = require("cheerio");
 const sanitizeHtml = require('sanitize-html');
+const mongoose = require('mongoose');
+
+const Post = require('./models/posts');
+
+mongoose.connect('mongodb://localhost/UnilagNewsPosts', { autoIndex: false })
+    .then(() => {
+        console.log('Connected to MongoDB');
+    })
+    .catch(err => {
+        return console.error(err);
+    });
 
 const getHTMLData = url => {
     return new Promise((resolve, reject) => {
@@ -71,14 +82,20 @@ getHTMLData('https://unilag.edu.ng/news/')
             $ = cheerio.load(value);
             postDetails.title = $('h2.entry-title a').text()
             postDetails.link = $('h2.entry-title a').attr('href')
-            postDetails.image = $('img').attr('src') || null;
+            postDetails.imageLink = $('img').attr('src') || null;
             // postDetails.shortDescription = $('div.fusion-post-content-container p').text()
             postDetails.updated = new Date($('span.updated').text())
             return postDetails;
         })
         posts.sort((a, b) => b.updated - a.updated);
 
-        console.log(posts);
+        posts.forEach(post => {
+            let postDoc = new Post(post);
+            postDoc.save(function (err) {
+                if (err) return console.error(err);
+                console.log(`${postDoc.title} Saved`);
+            })
+        });
     })
     .catch((err) => {
         console.dir(err);
